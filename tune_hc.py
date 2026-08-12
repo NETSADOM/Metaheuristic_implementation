@@ -5,10 +5,8 @@ from evaluator import Evaluator
 from optimizers import random_restart_hill_climbing
 
 def tune_hc_neighborhood():
-    # The candidate values you want to test
     scales_to_test = [0.05, 0.10, 0.20]
     
-    # We only use pilot seeds for tuning!
     pilot_seeds = list(range(5))
     
     results = []
@@ -23,12 +21,10 @@ def tune_hc_neighborhood():
                 np.random.seed(seed)
                 evaluator = Evaluator(func=meta['func'], bounds=meta['bounds'], budget=20000, log_interval=100)
                 
-                # Pass the specific scale we are currently testing
                 random_restart_hill_climbing(evaluator, d=10, neighborhood_scale=scale)
                 
                 best_f_across_seeds.append(evaluator.best_f)
             
-            # Calculate the average performance across the 5 pilot seeds
             avg_fitness = np.mean(best_f_across_seeds)
             std_fitness = np.std(best_f_across_seeds)
             
@@ -41,7 +37,6 @@ def tune_hc_neighborhood():
                 'Std_Fitness': std_fitness
             })
             
-    # Convert to dataframe to easily find the overall best
     df = pd.DataFrame(results)
     
     print("\n=== TUNING SUMMARY ===")
